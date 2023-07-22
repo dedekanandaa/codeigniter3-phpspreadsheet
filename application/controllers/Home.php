@@ -30,6 +30,7 @@ class Home extends MY_Controller {
 	{
         $data['title'] = 'Codeigniter 3 - PHPSpreadsheet';
         $data['transaction_list'] = $this->home_model->fetch_transactions();
+        $data['total'] = $this->home_model->count();
 
         $this->load->view('frontend/homepage/header', $data);
         $this->load->view('frontend/homepage/content', $data);
@@ -71,15 +72,18 @@ class Home extends MY_Controller {
             }
 
             $spreadsheet = $reader->load($_FILES['uploadFile']['tmp_name']);
-            $sheet_data  = $spreadsheet->getActiveSheet(0)->toArray();
+            $sheet_data  = $spreadsheet->getActiveSheet()->toArray();
             $array_data  = [];
 
-            for($i = 1; $i < count($sheet_data); $i++) {
+            for($i = 6; $i < count($sheet_data)-1; $i++) {
                 $data = array(
-                    'name'       => $sheet_data[$i]['0'],
-                    'price'      => $sheet_data[$i]['1'],
-                    'qty'        => $sheet_data[$i]['2'],
-                    'input_date' => $sheet_data[$i]['3']
+                    'A'=> $sheet_data[$i]['2'],
+                    'B'=> $sheet_data[$i]['3'],
+                    'C'=> $sheet_data[$i]['4'],
+                    'D'=> $sheet_data[$i]['5'],
+                    'E'=> $sheet_data[$i]['6'],
+                    'F'=> $sheet_data[$i]['7'],
+                    'Z'=> $sheet_data[$i]['8'],
                 );
                 $array_data[] = $data;
             }
@@ -110,23 +114,27 @@ class Home extends MY_Controller {
         $sheet = $spreadsheet->getActiveSheet();
 
         /* Excel Header */
-        $sheet->setCellValue('A1', '#');
-        $sheet->setCellValue('B1', 'Name');
-        $sheet->setCellValue('C1', 'Price');
-        $sheet->setCellValue('D1', 'Quantity');
-        $sheet->setCellValue('E1', 'Total');
-        $sheet->setCellValue('F1', 'Date');
+        $sheet->setCellValue('A2', 'No');
+        $sheet->setCellValue('B2', 'A');
+        $sheet->setCellValue('C2', 'B');
+        $sheet->setCellValue('D2', 'C');
+        $sheet->setCellValue('E2', 'D');
+        $sheet->setCellValue('F2', 'E');
+        $sheet->setCellValue('G2', 'F');
+        $sheet->setCellValue('H2', 'Z');
         
         /* Excel Data */
-        $row_number = 2;
+        $row_number = 3;
         foreach($data as $key => $row)
         {
-            $sheet->setCellValue('A'.$row_number, $key+1);
-            $sheet->setCellValue('B'.$row_number, $row['name']);
-            $sheet->setCellValue('C'.$row_number, $row['price']);
-            $sheet->setCellValue('D'.$row_number, $row['qty']);
-            $sheet->setCellValue('E'.$row_number, $row['total']);
-            $sheet->setCellValue('F'.$row_number, $row['input_date']);
+            $sheet->setCellValue('No'.$row_number, $key+1);
+            $sheet->setCellValue('A'.$row_number, $row['A']);
+            $sheet->setCellValue('B'.$row_number, $row['B']);
+            $sheet->setCellValue('C'.$row_number, $row['C']);
+            $sheet->setCellValue('D'.$row_number, $row['D']);
+            $sheet->setCellValue('E'.$row_number, $row['E']);
+            $sheet->setCellValue('F'.$row_number, $row['F']);
+            $sheet->setCellValue('Z'.$row_number, $row['Z']);
         
             $row_number++;
         }
@@ -141,6 +149,16 @@ class Home extends MY_Controller {
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
+    }
+    function clear() {
+        $this->home_model->clear();
+        redirect('/');
+    }
+
+    function count() {
+        $data=
+        $this->home_model->count();
+        var_dump($data);
     }
 
 }
