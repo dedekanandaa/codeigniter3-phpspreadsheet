@@ -104,8 +104,7 @@ class Home extends MY_Controller {
     |-------------------------------------------------------------------
     |
     */
-	function export_excel()
-	{
+	function export() {
         /* Data */
         $data = $this->home_model->fetch_transactions();
 
@@ -114,30 +113,58 @@ class Home extends MY_Controller {
         $sheet = $spreadsheet->getActiveSheet();
 
         /* Excel Header */
-        $sheet->setCellValue('A2', 'No');
-        $sheet->setCellValue('B2', 'A');
-        $sheet->setCellValue('C2', 'B');
-        $sheet->setCellValue('D2', 'C');
-        $sheet->setCellValue('E2', 'D');
-        $sheet->setCellValue('F2', 'E');
-        $sheet->setCellValue('G2', 'F');
-        $sheet->setCellValue('H2', 'Z');
+        $sheet->setCellValue('B5', 'No');
+        $sheet->mergeCells('B5:B6');
+
+        $sheet->setCellValue('C5', 'Kriteria');
+        $sheet->mergeCells('C5:H5');
+
+        $sheet->setCellValue('I5', 'Target');
+
+        $sheet->setCellValue('C6', 'A');
+        $sheet->setCellValue('D6', 'B');
+        $sheet->setCellValue('E6', 'C');
+        $sheet->setCellValue('F6', 'D');
+        $sheet->setCellValue('G6', 'E');
+        $sheet->setCellValue('H6', 'F');
+        $sheet->setCellValue('I6', 'Z');
         
         /* Excel Data */
-        $row_number = 3;
+        $row_number = 7;
         foreach($data as $key => $row)
         {
-            $sheet->setCellValue('No'.$row_number, $key+1);
-            $sheet->setCellValue('A'.$row_number, $row['A']);
-            $sheet->setCellValue('B'.$row_number, $row['B']);
-            $sheet->setCellValue('C'.$row_number, $row['C']);
-            $sheet->setCellValue('D'.$row_number, $row['D']);
-            $sheet->setCellValue('E'.$row_number, $row['E']);
-            $sheet->setCellValue('F'.$row_number, $row['F']);
-            $sheet->setCellValue('Z'.$row_number, $row['Z']);
+            $sheet->setCellValue('B'.$row_number, $key+1);
+            $sheet->setCellValue('C'.$row_number, $row['A']);
+            $sheet->setCellValue('D'.$row_number, $row['B']);
+            $sheet->setCellValue('E'.$row_number, $row['C']);
+            $sheet->setCellValue('F'.$row_number, $row['D']);
+            $sheet->setCellValue('G'.$row_number, $row['E']);
+            $sheet->setCellValue('H'.$row_number, $row['F']);
+            $sheet->setCellValue('I'.$row_number, $row['Z']);
         
             $row_number++;
         }
+
+        //result
+
+        for($i = 'c', $letter = 'a'; $i != 'j'; $i++, $letter++) {
+            for($j = 1; $j <= 3; $j++) {
+                if($i === 'i') {
+                    $count = "=\"Z$j = \" &COUNTIF((".$i ."7:".$i.($row_number-1)."), \"Z$j\")";
+                } else {
+                    $count = "=\"$letter$j = \" &COUNTIF((".$i ."7:".$i.($row_number-1)."), \"$letter$j\")";
+                }
+                $cell = $i.($row_number+$j);
+                $sheet->setCellValue($cell, $count);
+            }
+        }
+        /* Styling */
+        $sheet->getStyle('B5:I'.($row_number-1))->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('B5:I'.($row_number-1))->getAlignment()->setVertical('middle');
+        $sheet->getStyle('B5:I'.($row_number-1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
+
+        $sheet->getStyle('B5:I6')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $sheet->getStyle('B5:I6')->getFill()->getStartColor()->setARGB('538DD5');
 
         /* Excel File Format */
         $writer = new Xlsx($spreadsheet);
@@ -148,17 +175,12 @@ class Home extends MY_Controller {
         header('Cache-Control: max-age=0');
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->setPreCalculateFormulas(true);
         $writer->save('php://output');
     }
+    
     function clear() {
         $this->home_model->clear();
         redirect('/');
     }
-
-    function count() {
-        $data=
-        $this->home_model->count();
-        var_dump($data);
-    }
-
 }

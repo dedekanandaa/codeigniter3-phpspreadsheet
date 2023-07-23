@@ -69,13 +69,13 @@
                 </tr>
                 <tr class="">
                     <td class="border">#</td>
-                    <td class="border">A2 = <?= $total[0]['A3']?></td>
-                    <td class="border">B2 = <?= $total[0]['B3']?></td>
-                    <td class="border">C2 = <?= $total[0]['C3']?></td>
-                    <td class="border">D2 = <?= $total[0]['D3']?></td>
-                    <td class="border">E2 = <?= $total[0]['E3']?></td>
-                    <td class="border">F2 = <?= $total[0]['F3']?></td>
-                    <td class="border">Z2 = <?= $total[0]['Z3']?></td>
+                    <td class="border">A2 = <?= $total[0]['A2']?></td>
+                    <td class="border">B2 = <?= $total[0]['B2']?></td>
+                    <td class="border">C2 = <?= $total[0]['C2']?></td>
+                    <td class="border">D2 = <?= $total[0]['D2']?></td>
+                    <td class="border">E2 = <?= $total[0]['E2']?></td>
+                    <td class="border">F2 = <?= $total[0]['F2']?></td>
+                    <td class="border">Z2 = <?= $total[0]['Z2']?></td>
                 </tr>
                 <tr class="">
                     <td class="border">#</td>

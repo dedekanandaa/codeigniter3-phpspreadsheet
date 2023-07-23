@@ -2,7 +2,7 @@
 <div id="modalExport" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="post" action="<?= site_url('home/export_excel') ?>">
+            <form method="post" action="<?= site_url('home/export') ?>">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Export to Excel</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
